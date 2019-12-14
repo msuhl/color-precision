@@ -1,4 +1,4 @@
-package dk.w4.colorpredictor.knn
+package dk.w4.colorpredictor.knn.chars
 
 import java.util.*
 import java.util.concurrent.*
@@ -33,7 +33,12 @@ class KnnClassifier(private val k: Int, numberOfThread: Int) {
             threadPoolExecutor.submit {
                 val distance: Double = DistanceCalculator.getDistance(target.data, item.data)
                 //System.out.println("current thread name : "+Thread.currentThread().getName() +" , "+target.getFileName() +" vs "+sampleData.getFileName() + " value : "+distance);
-                completableFuture.complete(SampleDistanceValue(item.identifier, distance))
+                completableFuture.complete(
+                    SampleDistanceValue(
+                        item.identifier,
+                        distance
+                    )
+                )
             }
             distanceValues.add(completableFuture)
         }

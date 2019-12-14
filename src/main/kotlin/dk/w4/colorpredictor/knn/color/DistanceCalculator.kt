@@ -1,13 +1,25 @@
 package dk.w4.colorpredictor.knn.color
 
-// Distance calculator using Euclidean fomula
+import kotlin.math.pow
+import kotlin.math.sqrt
+
 object DistanceCalculator {
-    fun getDistance(data1: DoubleArray, data2: DoubleArray): Double {
-        require(data1.size == data2.size) { " Data length mismatched ! " }
+    fun getDistanceBetweenPixels(data1: Triple<Int, Int, Int>, data2: Triple<Int, Int, Int>): Double {
+        return sqrt(
+            (data1.first.toDouble() - data2.first.toDouble()).pow(2.0)
+                    + (data1.second.toDouble() - data2.second.toDouble()).pow(2.0)
+                    + (data1.third.toDouble() - data2.third.toDouble()).pow(2.0)
+        )
+    }
+
+    fun getDistance(
+        data1: Array<Triple<Int, Int, Int>>,
+        data2: Array<Triple<Int, Int, Int>>
+    ): Double {
         var sum = 0.0
-        for (i in data1.indices) {
-            sum += Math.pow(data1[i] - data2[i], 2.0)
+        data1.forEach { pixel ->
+            data2.forEach { sum += getDistanceBetweenPixels(pixel, it) }
         }
-        return Math.sqrt(sum)
+        return sum / (data1.size * data2.size)
     }
 }

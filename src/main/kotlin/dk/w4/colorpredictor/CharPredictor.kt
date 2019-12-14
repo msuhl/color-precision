@@ -1,9 +1,9 @@
 package dk.w4.colorpredictor
 
-import dk.w4.colorpredictor.knn.DataLoader
-import dk.w4.colorpredictor.knn.KhmerNumericLabel
-import dk.w4.colorpredictor.knn.KnnClassifier
-import dk.w4.colorpredictor.knn.SampleData
+import dk.w4.colorpredictor.knn.chars.DataLoader
+import dk.w4.colorpredictor.knn.chars.KhmerNumericLabel
+import dk.w4.colorpredictor.knn.chars.KnnClassifier
+import dk.w4.colorpredictor.knn.chars.SampleData
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutionException

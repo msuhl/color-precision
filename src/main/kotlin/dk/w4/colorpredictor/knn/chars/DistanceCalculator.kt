@@ -1,4 +1,4 @@
-package dk.w4.colorpredictor.knn
+package dk.w4.colorpredictor.knn.chars
 
 // Distance calculator using Euclidean fomula
 object DistanceCalculator {

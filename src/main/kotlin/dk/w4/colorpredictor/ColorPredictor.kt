@@ -1,20 +1,43 @@
 package dk.w4.colorpredictor
 
-import dk.w4.colorpredictor.knn.DataLoader
-import dk.w4.colorpredictor.knn.KhmerNumericLabel
-import dk.w4.colorpredictor.knn.KnnClassifier
-import dk.w4.colorpredictor.knn.SampleData
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ExecutionException
+import dk.w4.colorpredictor.knn.color.KnnClassifier
+import dk.w4.colorpredictor.knn.color.ModelData
+import dk.w4.colorpredictor.preperation.ModelGenerator
 
 
 fun main(args: Array<String>) {
+    val modelGenerator = ModelGenerator()
+    modelGenerator.generateModel("data/image/train", "data/image/model.json")
+    val model: List<ModelData> = modelGenerator.loadModel("data/image/model.json")
+
+    modelGenerator.generateModel("data/image/test", "data/image/testModel.json")
+    val testModel: List<ModelData> = modelGenerator.loadModel("data/image/testModel.json")
+
+    val classifier = KnnClassifier(3, 10)
+
+    var errorCount = 0.0
+    val startTestTime = System.currentTimeMillis()
+    var totalTest = 0
+    val resultText = StringBuilder()
+
+    for (value in testModel) {
+        val result: String = classifier.doClassify(value, model)
+        println("${value.identifier} -> $result")
+    }
+
+
+    classifier.close()
+
+    /*
+
+
+
     val dataLoader = DataLoader("data/train")
     dataLoader.load()
     val dataSamples: ConcurrentHashMap<String, MutableList<SampleData>> =
         dataLoader.data // load as map in order to group it by folder
     val testLoader = DataLoader("data/test")
+
     testLoader.load()
     val testSamples: ConcurrentHashMap<String, MutableList<SampleData>> =
         testLoader.data //load as map in order to group it by folder
@@ -31,6 +54,10 @@ fun main(args: Array<String>) {
     val startTestTime = System.currentTimeMillis()
     var totalTest = 0
     val resultText = StringBuilder()
+
+     */
+
+    /*
     try {
         for ((key, value) in testSamples) {
             println("Begin to test for  folder [ ./test/$key ]  for Khmer character : " + KhmerNumericLabel.valueOf(key))
@@ -64,4 +91,6 @@ fun main(args: Array<String>) {
     } finally {
         classifier.close()
     }
+
+     */
 }

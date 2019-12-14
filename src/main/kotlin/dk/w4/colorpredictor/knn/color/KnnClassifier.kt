@@ -6,7 +6,8 @@ import java.util.concurrent.*
 
 class KnnClassifier(private val k: Int, numberOfThread: Int) {
 
-    private var threadPoolExecutor: ThreadPoolExecutor = Executors.newFixedThreadPool(numberOfThread) as ThreadPoolExecutor
+    private var threadPoolExecutor: ThreadPoolExecutor =
+        Executors.newFixedThreadPool(numberOfThread) as ThreadPoolExecutor
 
     private fun reversePriorityQueue(init: Int): PriorityBlockingQueue<SampleDistanceValue> {
         return PriorityBlockingQueue<SampleDistanceValue>(
@@ -24,18 +25,19 @@ class KnnClassifier(private val k: Int, numberOfThread: Int) {
     }
 
     @Throws(ExecutionException::class, InterruptedException::class)
-    fun doClassify(target: SampleData, sampleData: List<SampleData>): String {
+    fun doClassify(target: ModelData, sampleData: List<ModelData>): String {
 
         val distanceValues: MutableList<CompletableFuture<SampleDistanceValue>> = ArrayList()
 
         sampleData.forEach { item ->
-            val completableFuture: CompletableFuture<SampleDistanceValue> = CompletableFuture()
-            threadPoolExecutor.submit {
-                val distance: Double = DistanceCalculator.getDistance(target.data, item.data)
-                //System.out.println("current thread name : "+Thread.currentThread().getName() +" , "+target.getFileName() +" vs "+sampleData.getFileName() + " value : "+distance);
-                completableFuture.complete(SampleDistanceValue(item.identifier, distance))
+            item.data.forEach {
+                val completableFuture: CompletableFuture<SampleDistanceValue> = CompletableFuture()
+                threadPoolExecutor.submit {
+                    val distance: Double = DistanceCalculator.getDistanceBetweenPixels(target.data.first(), it)
+                    completableFuture.complete(SampleDistanceValue(item.identifier, distance))
+                }
+                distanceValues.add(completableFuture)
             }
-            distanceValues.add(completableFuture)
         }
         val combine = CompletableFuture.allOf(*distanceValues.toTypedArray())
         combine.get() //wait for all tasks to complete
@@ -46,7 +48,8 @@ class KnnClassifier(private val k: Int, numberOfThread: Int) {
         val classification: MutableMap<String, Int> = HashMap()
 
         for (i in 0 until k) {
-            val value: Optional<SampleDistanceValue> = Optional.of<SampleDistanceValue>(reverseDistancePriorityQueue.poll())
+            val value: Optional<SampleDistanceValue> =
+                Optional.of<SampleDistanceValue>(reverseDistancePriorityQueue.poll())
             value.ifPresent { it: SampleDistanceValue ->
                 classification.merge(it.identifier, 1) { v1: Int, v2: Int -> v1 + v2 }
             }
