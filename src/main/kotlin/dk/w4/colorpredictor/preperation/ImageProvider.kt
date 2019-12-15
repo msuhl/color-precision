@@ -2,9 +2,6 @@ package dk.w4.colorpredictor.preperation
 
 import java.awt.Image
 import java.awt.image.BufferedImage
-import java.io.File
-import java.io.IOException
-import javax.imageio.ImageIO
 
 object ImageProvider {
     fun getPixelRGB(pixel: Int): Triple<Int, Int, Int> {
@@ -59,15 +56,5 @@ object ImageProvider {
         g2d.drawImage(tmp, 0, 0, null)
         g2d.dispose()
         return resized
-    }
-
-    fun JavaWalkBufferedImageTest1() {
-        try { // get the BufferedImage, using the ImageIO class
-            val image = ImageIO.read(File("/Users/silverbaq/Github/color-predictor/data/image/file.jpg"))
-            val pixelRGBs = marchThroughImage(resize(image))
-            println(pixelRGBs)
-        } catch (e: IOException) {
-            System.err.println(e.message)
-        }
     }
 }
