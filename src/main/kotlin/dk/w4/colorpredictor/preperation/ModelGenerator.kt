@@ -57,6 +57,46 @@ class ModelGenerator() {
         saveModel(data.toMap(), outputPath)
     }
 
+    fun generateTargets(path: String, outputPath: String) {
+        val data: ConcurrentHashMap<String, MutableList<Array<Int>>> = ConcurrentHashMap()
+        val directories = Files.list(
+            Paths.get(path)
+        ).parallel()
+            .filter { path: Path? ->
+                Files.isDirectory(path)
+            }
+            .collect(Collectors.toList())
+
+        directories.parallelStream().forEach { it: Path ->
+            try {
+                val files = Files.list(it).parallel()
+                    .filter { path: Path? ->
+                        Files.isRegularFile(path)
+                    }.collect(
+                        Collectors.toList()
+                    )
+                files.forEach(Consumer { filePath: Path ->
+                    try {
+                        val name = "${it.fileName} : ${filePath.fileName}"
+
+                        val image = ImageIO.read(filePath.toFile())
+                        val rgbs = ImageProvider.getImageAvg(image)
+                        if (data[name] != null) {
+                            data[name]?.add(rgbs)
+                        } else {
+                            data[name] = mutableListOf(rgbs)
+                        }
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                })
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        saveModel(data.toMap(), outputPath)
+    }
+
     private fun saveModel(model: Map<String, MutableList<Array<Int>>>, outputPath: String) {
         val json = Gson().toJson(model).toString()
         println(json)
@@ -67,9 +107,19 @@ class ModelGenerator() {
 
     fun loadModel(modelPath: String): List<ModelData> {
         val jsonString = File(modelPath).readText()
-        val mapType: Type = object : TypeToken<HashMap<String, Array<Array<Int>>>>(){}.type
+        val mapType: Type = object : TypeToken<HashMap<String, Array<Array<Int>>>>() {}.type
         val data: HashMap<String, Array<Array<Int>>> = Gson().fromJson(jsonString, mapType)
-        val model2 = data.map { (key, value) -> ModelData(key, value.map { Triple(it[0], it[1], it[2]) }.toTypedArray())  }
+        val model2 =
+            data.map { (key, value) -> ModelData(key, value.map { Triple(it[0], it[1], it[2]) }.toTypedArray()) }
+        return model2
+    }
+
+    fun loadTestData(modelPath: String): List<ModelData> {
+        val jsonString = File(modelPath).readText()
+        val mapType: Type = object : TypeToken<HashMap<String, Array<Array<Int>>>>() {}.type
+        val data: HashMap<String, Array<Array<Int>>> = Gson().fromJson(jsonString, mapType)
+        val model2 =
+            data.map { (key, value) -> ModelData(key, value.map { Triple(it[0], it[1], it[2]) }.toTypedArray()) }
         return model2
     }
 }

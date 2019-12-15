@@ -26,7 +26,6 @@ class KnnClassifier(private val k: Int, numberOfThread: Int) {
 
     @Throws(ExecutionException::class, InterruptedException::class)
     fun doClassify(target: ModelData, sampleData: List<ModelData>): String {
-
         val distanceValues: MutableList<CompletableFuture<SampleDistanceValue>> = ArrayList()
 
         sampleData.forEach { item ->
