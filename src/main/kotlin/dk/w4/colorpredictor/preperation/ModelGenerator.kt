@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken
 import dk.w4.colorpredictor.knn.color.ModelData
 import java.io.File
 import java.io.IOException
+import java.lang.Exception
 import java.lang.reflect.Type
 import java.nio.file.Files
 import java.nio.file.Path
@@ -48,6 +49,8 @@ class ModelGenerator() {
                         }
                     } catch (e: IOException) {
                         e.printStackTrace()
+                    } catch (ex: Exception){
+                        ex.printStackTrace()
                     }
                 })
             } catch (e: IOException) {

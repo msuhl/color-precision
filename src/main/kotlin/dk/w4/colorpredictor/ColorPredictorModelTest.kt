@@ -23,12 +23,20 @@ fun main(args: Array<String>) {
     var totalTest = 0
     val resultText = StringBuilder()
 
+    val wrong = HashMap<String, Int>()
+    val totalTestMap: HashMap<String, Int> = HashMap()
+
+    model.map { wrong[it.identifier] = 0; totalTestMap[it.identifier] = 0; }
+
     for (value in testModel) {
         val result: String = classifier.doClassify(value, model)
         println("${value.identifier} -> $result")
-        if (result != value.identifier.split(" : ").first()){
+        val key = value.identifier.split(" : ").first()
+        if (result != key) {
             errorCount++
+            wrong[key] = wrong[key]?.plus(1) ?: 0
         }
+        totalTestMap[key] = totalTestMap[key]?.plus(1) ?: 0
         totalTest++
     }
 
@@ -38,7 +46,8 @@ fun main(args: Array<String>) {
     val duration = (System.currentTimeMillis() - startTestTime).toDouble() / 1000
     println("Total duration take : $duration (s)")
     println("================Summary result =================================")
-    println(resultText.toString())
+    println("test: wrong / total")
+    totalTestMap.keys.forEach { println("$it: ${wrong[it] ?: 0} / ${totalTestMap[it]}") }
     println("=====================***========================================")
     classifier.close()
 }
