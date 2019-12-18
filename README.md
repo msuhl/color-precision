@@ -33,6 +33,6 @@ allprojects {
 2. Add the dependency
 ```
 dependencies {
-        implementation 'com.github.Silverbaq:color-precision:Tag'
+        implementation 'com.github.Silverbaq:color-precision:0.1'
 }
 ```
