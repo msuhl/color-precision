@@ -39,7 +39,7 @@ allprojects {
 
 ```
 dependencies {
-        implementation 'com.github.Silverbaq:color-precision:0.1-test'
+        implementation 'com.github.Silverbaq:color-precision:0.0.1'
 }
 ```
 
