@@ -6,21 +6,26 @@ import java.io.File
 import javax.imageio.ImageIO
 
 fun main() {
-    val predector = ColorPredictor()
-
-    val file = File("/Users/silverbaq/Github/color-predictor/data/image/test/blue/8007-home.jpg")
-    val image = ImageIO.read(file)
-    val target = predector.getTargetModelData("my-image", image)
-
-    val k = 3
-    val result = predector.PredictColor(target, k)
-    println(result) // blue
+        // Making target from local file
+        val file = File("<filepath>")
+        val image = ImageIO.read(file)
+        val colorPredictor = ColorPredictor()
+        //val target = colorPredictor.getTargetModelData("my-image", image)
+        
+        // Makeing target from url
+        val target = colorPredictor.getTargetModelData("my-image", "https://<url>")
+    
+        val model = colorPredictor.loadModel("<filepath>/model.json")
+        val k = 3
+        val result = colorPredictor.PredictColor(target, model, k)
+        print(result) // red
 }
 ```
 
 ## Setup
 
-1. Add it in your root build.gradle at the end of repositories:
+- Add it in your root build.gradle at the end of repositories:
+
 ```
 allprojects {
 	repositories {
@@ -30,9 +35,12 @@ allprojects {
 }
 ```
 
-2. Add the dependency
+- Add the dependency
+
 ```
 dependencies {
-        implementation 'com.github.Silverbaq:color-precision:0.1'
+        implementation 'com.github.Silverbaq:color-precision:0.1-test'
 }
 ```
+
+- Download the Premade [model](https://github.com/Silverbaq/color-precision/blob/0.0.1/data/image/model.json) (or make your own). Place it so you can parse it into the code.
