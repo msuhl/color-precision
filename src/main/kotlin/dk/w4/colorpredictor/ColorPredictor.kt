@@ -9,17 +9,16 @@ import java.net.URL
 import javax.imageio.ImageIO
 
 class ColorPredictor {
-    fun PredictColor(target: ModelData, k: Int): String {
-        val modelGenerator = ModelGenerator()
-        //modelGenerator.generateModel("data/image/train", "data/image/model.json")
-        val file = ColorPredictor::class.java.getResource("model.json").path
-        val model: List<ModelData> = modelGenerator.loadModel(file) // "data/image/model.json"
-
+    fun PredictColor(target: ModelData, model: List<ModelData>, k: Int): String {
         val classifier = KnnClassifier(k, 10)
         val result: String = classifier.doClassify(target, model)
         classifier.close()
-
         return result
+    }
+
+    fun loadModel(modelPath: String): List<ModelData> {
+        val modelGenerator = ModelGenerator()
+        return modelGenerator.loadModel(modelPath)
     }
 
     fun getTargetModelData(identifier: String, image: BufferedImage): ModelData {
