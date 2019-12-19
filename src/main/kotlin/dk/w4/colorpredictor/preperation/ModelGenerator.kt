@@ -109,7 +109,7 @@ class ModelGenerator() {
     }
 
     fun loadModel(modelPath: String): List<ModelData> {
-        val jsonString = File(modelPath).readText()
+        val jsonString = modelPath
         val mapType: Type = object : TypeToken<HashMap<String, Array<Array<Int>>>>() {}.type
         val data: HashMap<String, Array<Array<Int>>> = Gson().fromJson(jsonString, mapType)
         val model2 =
