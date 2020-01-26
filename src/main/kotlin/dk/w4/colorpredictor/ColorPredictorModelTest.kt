@@ -30,7 +30,7 @@ fun main(args: Array<String>) {
 
     for (value in testModel) {
         val result: String = classifier.doClassify(value, model)
-        println("${value.identifier} -> $result")
+        if (value.identifier.split(" ").first() != result)  {println("${value.identifier} -> $result")}
         val key = value.identifier.split(" : ").first()
         if (result != key) {
             errorCount++
