@@ -6,11 +6,13 @@ import javax.imageio.ImageIO
 fun main() {
     val predector = ColorPredictor()
 
-    val file = File("/Users/silverbaq/Github/color-predictor/data/image/test/blue/8007-home.jpg")
-    val image = ImageIO.read(file)
-    val target = predector.getTargetModelData("my-image", image)
-    val model = predector.loadModel("/Users/silverbaq/Github/color-predictor/data/image/model.json")
+    val url1 = "https://sports-data.api.tv2.dk/sports-data-backend/images/participants/8007?type=kit&name=home"
+    val url2 = "https://sports-data.api.tv2.dk/sports-data-backend/images/participants/8008?type=kit&name=home"
+    val url3 = "https://sports-data.api.tv2.dk/sports-data-backend/images/participants/8008?type=kit&name=away"
+
+    val target = predector.getTargetModelData("my-image", url3)
+    val model = predector.loadModel("data/image/model.json")
 
     val result = predector.PredictColor(target, model, 3)
-    println(result) // blue
+    println(result)
 }
